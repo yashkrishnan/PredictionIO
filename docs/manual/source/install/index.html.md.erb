@@ -1,91 +1,54 @@
 ---
-title: Installing PredictionIO
+title: Installing Apache PredictionIO®
 ---
 
-## Method 1: Launch an AWS Instance
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
 
-You can [launch PredictionIO on Amazon Web Services](launch-aws.html).
-This is a hassle-free way to get a well-configured PredictionIO server quickly.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-There is also a [AWS Cloudformation version for PredictionIO](/system/deploy-cloudformation/).
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 
-## Method 2: Quick Install
+## Prerequisites
 
-On Linux / Mac OS X, PredictionIO can now be installed with a single command:
-<br />
-`$ bash -c "$(curl -s https://install.prediction.io/install.sh)"`
+It is **very important** to meet the version of the following
+technologies that power Apache PredictionIO®.
 
-The above script will complete the installation for you.
-
-<%= partial 'shared/install/proceed_template' %>
-
-## Method 3: Manual Install
-
-### Prerequisites
-
-It is **very important** to meet the minimum version of the following
-technologies that power PredictionIO.
-
-* Apache Hadoop 2.4.0 (optional, required only if YARN and HDFS are needed)
-* Apache Spark 1.3.0 for Hadoop 2.4
-* Java SE Development Kit 7
+* Java SE Development Kit 8
+* Apache Spark 2.0+
+* Apache Hadoop 2.6, 2.7
 
 and one of the following sets:
 
-* PostgreSQL 9.1
+* PostgreSQL 9.6 or MySQL 5.1
+* Apache HBase 1.2
+* Elasticsearch 6.x, 5.6(deprecated)
 
-or
+## Installation
 
-* MySQL 5.1
+Pre-built for the following versions
 
-or
+* Scala 2.11
+* Apache Spark 2.4
+* Apache Hadoop 2.7
+* Elasticsearch 6.8
 
-* Apache HBase 0.98.6
-* Elasticsearch 1.4.0
+* [Downloading Binary Distribution](install-sourcecode.html#downloading-binary-distribution)
 
-If you are running on a single machine, we recommend a minimum of 2GB memory.
+Building Apache PredictionIO
 
-INFO: If you are using Linux, Apache Spark local mode, which is the default
-operation mode without further configuration, may not work. In that case,
-configure your Apache Spark to run in [standalone cluster
-mode](http://spark.apache.org/docs/latest/spark-standalone.html).
+* [Downloading Source Code](install-sourcecode.html#downloading-source-code)
 
-### Installing PredictionIO
+Docker
 
-PredictionIO runs on a Java virtual machine, so it runs on most platforms.
-Choose your platform below:
-
-* [Installing PredictionIO on Linux / Mac OS X](install-linux.html)
-* [Installing PredictionIO from Source Code](install-sourcecode.html)
-* [Installing PredictionIO with Vagrant (VirtualBox)](install-vagrant.html)
-* [Installing PredictionIO with Terminal.com Snap](https://www.terminal.com/snapshot/f444bfb7538dfc596485374f56167ec6f79cbc16f793f013ad120067070eb81a)
-
-
-You may also use one of the community-contributed packages to install
-PredictionIO:
-
-* [Installing PredictionIO with
-  Docker](/community/projects.html#docker-installation-for-predictionio)
-
-
-[//]: # (* *(coming soon)* Installing PredictionIO with Homebrew)
-
-
-
-WARNING: **0.8.2 contains schema changes from the previous versions, if you have
-installed the previous versions, you may need to clear both HBase and
-Elasticsearch. See more [here](/resources/upgrade/).**
-
-
-[//]: # (## Production Deployment)
-
-[//]: # (For production environment setup, please refer to [Production)
-[//]: # (Deployment](/production/deploy.html) guide.)
-
-## Method 4: Terminal.com
-
-Public snaps are available on our Terminal.com
-[page](https://www.terminal.com/user/predictionio).
-
-Instance type **must be** set to *medium* or higher for PredictionIO to function
-correctly.
+* [Installing Apache PredictionIO with Docker](install-docker.html)

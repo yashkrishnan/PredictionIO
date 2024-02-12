@@ -2,28 +2,46 @@
 title: Collecting Data through REST/SDKs
 ---
 
-**Event Server** is designed to collect data into PredictionIO in an event-based
-style. Once the Event Server is launched, your application can send data to it
-through its **Event API** with HTTP requests or with `EventClient`s of
-PredictionIO's SDKs.
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
 
-INFO: All PredictionIO-compliant engines support accessing the Event Store (i.e. the
-data store of Event Server) through [PredictionIO's Storage
-API](http://docs.prediction.io/api/current/index.html#io.prediction.data.storage.package).
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+**Event Server** is designed to collect data into Apache PredictionIO
+in an event-based style. Once the Event Server is launched, your
+application can send data to it through its **Event API** with HTTP requests or
+with `EventClient`s of PredictionIO's SDKs.
+
+INFO: All Apache PredictionIO-compliant engines support accessing
+the Event Store (i.e. the data store of Event Server) through [Apache
+PredictionIO's Storage
+API](http://predictionio.apache.org/api/current/index.html#org.apache.predictionio.data.storage.package).
 
 ## Launching the Event Server
 
 INFO: Before launching the Event Server, make sure that your event data store
-backend is properly configured and is running. By default, PredictionIO uses
-Apache HBase, and a quick configuration can be found
-[here](/install/install-linux.html#hbase). Please allow a minute
-(usually less than 30 seconds) after HBase is started for its initialization to
-complete before starting the Event Server.
+backend is properly configured and is running. By default, Apache PredictionIO
+uses Apache HBase, and a quick configuration can be found
+[here](/install/install-sourcecode/#hbase). Please allow a minute (usually less
+than 30 seconds) after HBase is started for its initialization to complete
+before starting the Event Server.
 
 
-Everything about PredictionIO can be done through the `pio` command. Please add
-PIO binary command path to to your `PATH` first. Assuming PredictionIO is
-installed at `/home/yourname/PredictionIO/`, you can run
+Everything about Apache PredictionIO can be done through the `pio`
+command. Please add PIO binary command path to to your `PATH` first. Assuming
+PredictionIO is installed at `/home/yourname/PredictionIO/`, you can run
 
 ```
 $ PATH=$PATH:/home/yourname/PredictionIO/bin; export PATH
@@ -49,7 +67,7 @@ Sample response:
 
 ```
 HTTP/1.1 200 OK
-Server: spray-can/1.2.1
+Server: akka-http/10.1.5
 Date: Wed, 10 Sep 2014 22:37:30 GMT
 Content-Type: application/json; charset=UTF-8
 Content-Length: 18
@@ -81,7 +99,7 @@ to use the Event API. You should see something like the following output:
 ### Creating Your First Event
 
 You may connect to the Event Server with HTTP request or by using one of many
-**PredictionIO SDKs**.
+**Apache PredictionIO SDKs**.
 
 For example, the following shows how one can create an event involving a single entity.
 Replace the value of `accessKey` by the *Access Key* generated for your App.
@@ -93,7 +111,7 @@ $ curl -i -X POST http://localhost:7070/events.json?accessKey=WPgcXKd42FPQpZHVbV
 -H "Content-Type: application/json" \
 -d '{
   "event" : "my_event",
-  "entityType" : "user"
+  "entityType" : "user",
   "entityId" : "uid",
   "properties" : {
     "prop1" : 1,
@@ -266,7 +284,7 @@ Sample response:
 
 ```
 HTTP/1.1 201 Created
-Server: spray-can/1.2.1
+Server: akka-http/10.1.5
 Date: Wed, 10 Sep 2014 22:51:33 GMT
 Content-Type: application/json; charset=UTF-8
 Content-Length: 41
@@ -310,7 +328,7 @@ Field | Type | Description
                    | | are reserved and shouldn't be used.
 `targetEntityId` | String | (Optional) The target entity ID.
 `properties` | JSON | (Optional) See **Note About Properties** below
-             | | **Note**: All peroperty names start with "$" and "pio_"
+             | | **Note**: All property names start with "$" and "pio_"
              | | are reserved and shouldn't be used as keys inside `properties`.
 `eventTime` | String | (Optional) The time of the event. Although Event Server's
             | | current system time and UTC timezone will be used if this is
@@ -410,3 +428,5 @@ Please use the following CLI command:
 ```
 $ pio app data-delete <your_app_name>
 ```
+
+INFO: See [here](/cli/#event-server-commands) to know details of command-line interface for the event server.

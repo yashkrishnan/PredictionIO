@@ -1,5 +1,22 @@
 #!/bin/bash
 
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 #set -x
 
 my_dir="$(dirname "$0")"
@@ -138,6 +155,10 @@ if [[ $TRAIN_RESULT -ne 0 ]]; then
 fi
 
 # Deploy
+# Get current running instance PID
+PIDBYPORT_COMMAND="lsof -t -i:$PORT"
+DEPLOYEDPID=$($PIDBYPORT_COMMAND)
+
 DEPLOY_LOG=`mktemp $LOG_DIR/tmp.XXXXXXXXXX`
 $($DEPLOY_COMMAND 1>$DEPLOY_LOG 2>&1) &
 
@@ -152,6 +173,16 @@ while [[ $RETURN_VAL -ne 0 && $COUNTER -lt 20 ]]; do
   let RETURN_VAL=$?
   let COUNTER=COUNTER+1
 done
+
+# Check if the previous engine instance is running
+KILLSD_COMMAND="kill $DEPLOYEDPID"
+if [ -z "$DEPLOYEDPID" ]
+then
+  printf "\nNo stale PIDs found for port $PORT\n"
+else
+  $($KILLSD_COMMAND)
+  printf "\nStale PID found as $DEPLOYEDPID. Resources released.\n"
+fi
 
 cat $DEPLOY_LOG >> $LOG_FILE
 rm $DEPLOY_LOG

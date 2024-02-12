@@ -2,20 +2,140 @@
 title: Upgrade Instructions
 ---
 
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 
 This page highlights major changes in each version and upgrade tools.
 
-# How to upgrade
+# How to Upgrade
 
-To upgrade and use new version of PredictionIO, do the following:
+## Upgrade to 0.14.0
 
-- Download and unzip the new PredictionIO binary (the download path can be found in the [Download PredictionIO section](/install/install-linux/#method-2:-manual-install))
-- Retain the setting from current PredictionIO/conf/pio-env.sh to the new PredictionIO/conf/pio-env.sh.
-- If you have added PredictionIO/bin to your `PATH` environment variable before, change it to the new PredictionIO/bin as well.
+This release adds Elasticsearch 6 support. See [pull request](https://github.com/apache/predictionio/pull/466) for details.
+Consequently, you must reindex your data.
 
-# Additional Notes for Specific Versions Upgrade
+1. Access your old cluster to check existing indices
 
-In addition, please take notes of the following for specific version upgrade.
+```
+$ curl -XGET 'http://localhost:9200/_cat/indices?v'
+health status index     uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   pio_event 6BAPz-DfQ2e9bICdVRr03g   5   1       1501            0    321.3kb        321.3kb
+yellow open   pio_meta  oxDMU1mGRn-vnXtAjmifSw   5   1          4            0     32.4kb         32.4kb
+
+$ curl -XGET "http://localhost:9200/pio_meta/_search" -d'
+{
+  "aggs": {
+    "typesAgg": {
+      "terms": {
+        "field": "_type",
+        "size": 200
+      }
+    }
+  },
+  "size": 0
+}'
+{"took":3,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":4,"max_score":0.0,"hits":[]},"aggregations":{"typesAgg":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"accesskeys","doc_count":1},{"key":"apps","doc_count":1},{"key":"engine_instances","doc_count":1},{"key":"sequences","doc_count":1}]}}}
+
+$ curl -XGET "http://localhost:9200/pio_event/_search" -d'
+{
+  "aggs": {
+    "typesAgg": {
+      "terms": {
+        "field": "_type",
+        "size": 200
+      }
+    }
+  },
+  "size": 0
+}'
+{"took":2,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":1501,"max_score":0.0,"hits":[]},"aggregations":{"typesAgg":{"doc_count_error_upper_bound":0,"sum_other_doc_count":0,"buckets":[{"key":"1","doc_count":1501}]}}}
+```
+
+2. (Optional) Settings for new indices
+
+If you want to add specific settings associated with each index, we would recommend defining [Index Templates](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-templates.html).
+
+For example,
+
+```
+$ curl -H "Content-Type: application/json" -XPUT "http://localhost:9600/_template/pio_meta" -d'
+{
+  "index_patterns": ["pio_meta_*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  }
+}'
+$ curl -H "Content-Type: application/json" -XPUT "http://localhost:9600/_template/pio_event" -d'
+{
+  "index_patterns": ["pio_event_*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  }
+}'
+```
+
+3. [Reindex](https://www.elastic.co/guide/en/elasticsearch/reference/6.0/reindex-upgrade-remote.html)
+
+According to the following conversion table, you run the reindex every index that you need to migrate to your new cluster.
+
+| Old Cluster | New Cluster |
+| --------------- | ---------------- |
+| index: `pio_meta` type: `accesskeys` | index: `pio_meta_accesskeys` |
+| index: `pio_meta` type: `apps` | index: `pio_meta_apps` |
+| index: `pio_meta` type: `channels` | index: `pio_meta_channels` |
+| index: `pio_meta` type: `engine_instances` | index: `pio_meta_engine_instances` |
+| index: `pio_meta` type: `evaluation_instances` | index: `pio_meta_evaluation_instances` |
+| index: `pio_meta` type: `sequences` | index: `pio_meta_sequences` |
+| index: `pio_event` type: It depends on your use case. (e.g. `1`) | index: pio_event_<old_type> (e.g. `pio_event_1`) |
+
+For example,
+
+```
+$ curl -H "Content-Type: application/json" -XPOST "http://localhost:9600/_reindex" -d'
+{
+  "source": {
+    "remote": {
+      "host": "http://localhost:9200"
+    },
+    "index": "pio_meta",
+    "type": "accesskeys"
+  },
+  "dest": {
+    "index": "pio_meta_accesskeys"
+  }
+}'
+```
+
+## Upgrade to 0.12.0
+
+In 0.12.0, Elasticsearch 5.x client has been reimplemented as a singleton.
+Engine templates directly using Elasticsearch 5.x StorageClient require
+update for compatibility. See [pull request]
+(https://github.com/apache/predictionio/pull/421) for details.
+
+## Upgrade to 0.11.0
+
+Starting from 0.11.0, PredictionIO no longer bundles any JDBC drivers in the
+binary assembly. If your setup is using a JDBC backend and you run into storage
+connection errors after an upgrade, please manually install the JDBC driver. If
+you use PostgreSQL, you can find instructions
+[here](/install/install-sourcecode#pgsql).
 
 ## Upgrade to 0.9.2
 
@@ -45,13 +165,13 @@ NOTE: The following changes are not required for using 0.9.2 but it's recommende
 - remove this line of code:
 
     ```scala
-    import io.prediction.data.storage.Storage
+    import org.apache.predictionio.data.storage.Storage
     ```
 
     and replace it by
 
     ```scala
-    import io.prediction.data.store.PEventStore
+    import org.apache.predictionio.data.store.PEventStore
     ```
 
 - Change `appId: Int` to `appName: String` in DataSourceParams
@@ -94,12 +214,12 @@ NOTE: The following changes are not required for using 0.9.2 but it's recommende
 
 If Storage.getLEvents() is also used in Algorithm (such as ALSAlgorithm of E-Commerce Recommendation template), you also need to do following:
 
-NOTE: If `io.prediction.data.storage.Storage` is not used at all (such as Recommendation, Similar Product, Classification, Lead Scoring, Product Ranking template), there is no need to change Algorithm and can go to the later **engine.json** section.
+NOTE: If `org.apache.predictionio.data.storage.Storage` is not used at all (such as Recommendation, Similar Product, Classification, Lead Scoring, Product Ranking template), there is no need to change Algorithm and can go to the later **engine.json** section.
 
-- remove `import io.prediction.data.storage.Storage` and replace it by `import io.prediction.data.store.LEventStore`
+- remove `import org.apache.predictionio.data.storage.Storage` and replace it by `import org.apache.predictionio.data.store.LEventStore`
 - change `appId` to `appName` in the XXXAlgorithmParams class.
 - remove this line of code: `@transient lazy val lEventsDb = Storage.getLEvents()`
-- locate where `LEventStore.findByEntity()` is used, change it to `LEventStore.findByEntity()`:
+- locate where `lEventsDb.findSingleEntity()` is used, change it to `LEventStore.findByEntity()`:
 
     For example, change following code
 
@@ -230,22 +350,22 @@ Follow instructions below to modify existing engine templates to be compatible w
     import org.apache.spark.SparkContext
     ```
 
-2. Modify the file `build.sbt` in your template directory to use `pioVersion.value` as the version of io.prediction.core dependency:
+2. Modify the file `build.sbt` in your template directory to use `pioVersion.value` as the version of org.apache.predictionio.core dependency:
 
     Under your template's root directory, you should see a file `build.sbt` which has the following content:
 
     ```
     libraryDependencies ++= Seq(
-      "io.prediction"    %% "core"          % "0.8.6" % "provided",
+      "org.apache.predictionio"    %% "core"          % "0.8.6" % "provided",
       "org.apache.spark" %% "spark-core"    % "1.2.0" % "provided",
       "org.apache.spark" %% "spark-mllib"   % "1.2.0" % "provided")
     ```
 
-    Change the version of `"io.prediction" && "core"` to `pioVersion.value`:
+    Change the version of `"org.apache.predictionio" && "core"` to `pioVersion.value`:
 
     ```
     libraryDependencies ++= Seq(
-      "io.prediction"    %% "core"          % pioVersion.value % "provided",
+      "org.apache.predictionio"    %% "core"          % pioVersion.value % "provided",
       "org.apache.spark" %% "spark-core"    % "1.2.0" % "provided",
       "org.apache.spark" %% "spark-mllib"   % "1.2.0" % "provided")
     ```
@@ -253,7 +373,7 @@ Follow instructions below to modify existing engine templates to be compatible w
 3. Create a new file `pio-build.sbt` in template's **project/** directory with the following content:
 
     ```
-    addSbtPlugin("io.prediction" % "pio-build" % "0.9.0")
+    addSbtPlugin("org.apache.predictionio" % "pio-build" % "0.9.0")
     ```
 
     Then, you should see the following two files in the **project/** directory:
@@ -404,5 +524,5 @@ Replace by the returned app ID: ( is the original app ID used in 0.8.0/0.8.2.)
 $ set -a
 $ source conf/pio-env.sh
 $ set +a
-$ sbt/sbt "data/run-main io.prediction.data.storage.hbase.upgrade.Upgrade <from app ID>" "<to app ID>"
+$ sbt/sbt "data/run-main org.apache.predictionio.data.storage.hbase.upgrade.Upgrade <from app ID>" "<to app ID>"
 ```

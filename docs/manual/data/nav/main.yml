@@ -1,10 +1,10 @@
 root:
   -
-    body: 'PredictionIO Docs'
+    body: 'Apache PredictionIO® Documentation'
     url: '/'
     children:
       -
-        body: 'Welcome to PredictionIO'
+        body: 'Welcome to Apache PredictionIO®'
         url: '/'
   -
     body: 'Getting Started'
@@ -14,7 +14,7 @@ root:
         body: 'A Quick Intro'
         url: '/start/'
       -
-        body: 'Installing PredictionIO'
+        body: 'Installing Apache PredictionIO'
         url: '/install/'
       -
         body: 'Downloading an Engine Template'
@@ -50,7 +50,7 @@ root:
             url: '/sdk/ruby/'
           -
             body: 'Community Powered SDKs'
-            url: '/sdk/community/'
+            url: '/community/projects.html#sdks'
   -
     body: 'Deploying an Engine'
     url: '#'
@@ -59,14 +59,20 @@ root:
         body: 'Deploying as a Web Service'
         url: '/deploy/'
       -
-        body: 'Engine Command-line Interface'
-        url: '/cli/#engine-commands'
+        body: 'Batch Predictions'
+        url: '/batchpredict/'
+      -
+        body: 'Monitoring Engine'
+        url: '/deploy/monitoring/'
       -
         body: 'Setting Engine Parameters'
         url: '/deploy/engineparams/'
       -
         body: 'Deploying Multiple Engine Variants'
         url: '/deploy/enginevariants/'
+      -
+        body: 'Engine Server Plugin'
+        url: '/deploy/plugin/'
   -
     body: 'Customizing an Engine'
     url: '#'
@@ -91,9 +97,6 @@ root:
         body: 'Event Server Overview'
         url: '/datacollection/'
       -
-        body: 'Event Server Command-line Interface'
-        url: '/cli/#event-server-commands'
-      -
         body: 'Collecting Data with REST/SDKs'
         url: '/datacollection/eventapi/'
       -
@@ -111,8 +114,11 @@ root:
       -
         body: 'Using Analytics Tools'
         url: '/datacollection/analytics/'
+      -
+        body: 'Event Server Plugin'
+        url: '/datacollection/plugin/'
   -
-    body: 'Choosing an Algorithm(s)'
+    body: 'Choosing an Algorithm'
     url: '#'
     children:
       -
@@ -128,7 +134,7 @@ root:
         body: 'Adding Your Own Algorithms'
         url: '/algorithm/custom/'
   -
-    body: 'ML Tuning and Evaluation'
+    body: 'Tuning and Evaluation'
     url: '#'
     children:
       -
@@ -154,18 +160,118 @@ root:
         body: 'Architecture Overview'
         url: '/system/'
       -
-        body: 'Production Deployment with AWS CloudFormation'
-        url: '/system/deploy-cloudformation/'
-      -
         body: 'Using Another Data Store'
         url: '/system/anotherdatastore/'
+  -
+    body: 'PredictionIO® Official Templates'
+    url: '#'
+    children:
+      -
+        body: 'Intro'
+        url: '/templates/'
+      -
+        body: 'Recommendation'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/recommendation/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/recommendation/dase/'
+          -
+            body: 'Evaluation Explained'
+            url: '/templates/recommendation/evaluation/'
+          -
+            body: 'How-To'
+            url: '/templates/recommendation/how-to/'
+          -
+            body: 'Read Custom Events'
+            url: '/templates/recommendation/reading-custom-events/'
+          -
+            body: 'Customize Data Preparator'
+            url: '/templates/recommendation/customize-data-prep/'
+          -
+            body: 'Customize Serving'
+            url: '/templates/recommendation/customize-serving/'
+          -
+            body: 'Train with Implicit Preference'
+            url: '/templates/recommendation/training-with-implicit-preference/'
+          -
+            body: 'Filter Recommended Items by Blacklist in Query'
+            url: '/templates/recommendation/blacklist-items/'
+          -
+            body: 'Batch Persistable Evaluator'
+            url: '/templates/recommendation/batch-evaluator/'
+      -
+        body: 'E-Commerce Recommendation'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/ecommercerecommendation/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/ecommercerecommendation/dase/'
+          -
+            body: 'How-To'
+            url: '/templates/ecommercerecommendation/how-to/'
+          -
+            body: 'Train with Rate Event'
+            url: '/templates/ecommercerecommendation/train-with-rate-event/'
+          -
+            body: 'Adjust Score'
+            url: '/templates/ecommercerecommendation/adjust-score/'
+      -
+        body: 'Similar Product'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/similarproduct/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/similarproduct/dase/'
+          -
+            body: 'How-To'
+            url: '/templates/similarproduct/how-to/'
+          -
+            body: 'Multiple Events and Multiple Algorithms'
+            url: '/templates/similarproduct/multi-events-multi-algos/'
+          -
+            body: 'Returns Item Properties'
+            url: '/templates/similarproduct/return-item-properties/'
+          -
+            body: 'Train with Rate Event'
+            url: '/templates/similarproduct/train-with-rate-event/'
+          -
+            body: 'Get Rid of Events for Users'
+            url: '/templates/similarproduct/rid-user-set-event/'
+          -
+            body: 'Recommend Users'
+            url: '/templates/similarproduct/recommended-user/'
+      -
+        body: 'Classification'
+        children:
+          -
+            body: 'Quick Start'
+            url: '/templates/classification/quickstart/'
+          -
+            body: 'DASE'
+            url: '/templates/classification/dase/'
+          -
+            body: 'How-To'
+            url: '/templates/classification/how-to/'
+          -
+            body: 'Use Alternative Algorithm'
+            url: '/templates/classification/add-algorithm/'
+          -
+            body: 'Read Custom Properties'
+            url: '/templates/classification/reading-custom-properties/'
   -
     body: 'Engine Template Gallery'
     url: '#'
     children:
       -
         body: 'Browse'
-        url: 'http://templates.prediction.io'
+        url: '/gallery/template-gallery/'
       -
         body: 'Submit your Engine as a Template'
         url: '/community/submit-template/'
@@ -174,11 +280,8 @@ root:
     url: '#'
     children:
       -
-        body: 'Comics Recommendation Demo'
-        url: '/demo/tapster/'
-      -
         body: 'Community Contributed Demo'
-        url: '/demo/community/'
+        url: '/community/projects.html#demos'
       -
         body: 'Text Classification Engine Tutorial'
         url: '/demo/textclassification/'
@@ -209,15 +312,18 @@ root:
         body: 'FAQs'
         url: '/resources/faq/'
       -
-        body: 'Community Support'
+        body: 'Support'
         url: '/support/'
-      -
-        body: 'Enterprise Support'
-        url: '/support/#enterprise-support'
   -
     body: 'Resources'
     url: '#'
     children:
+      -
+        body: 'Command-line Interface'
+        url: '/cli/'
+      -
+        body: 'Release Cadence'
+        url: '/resources/release/'
       -
         body: 'Developing Engines with IntelliJ IDEA'
         url: '/resources/intellij/'
@@ -227,3 +333,22 @@ root:
       -
         body: 'Glossary'
         url: '/resources/glossary/'
+  -
+    body: 'Apache Software Foundation'
+    url: '#'
+    children:
+      -
+        body: 'Apache Homepage'
+        url: 'https://www.apache.org/'
+      -
+        body: 'License'
+        url: 'https://www.apache.org/licenses/'
+      -
+        body: 'Sponsorship'
+        url: 'https://www.apache.org/foundation/sponsorship.html'
+      -
+        body: 'Thanks'
+        url: 'https://www.apache.org/foundation/thanks.html'
+      -
+        body: 'Security'
+        url: 'https://www.apache.org/security/'

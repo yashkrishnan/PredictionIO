@@ -2,6 +2,23 @@
 title: Using Another Data Store
 ---
 
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
 PredictionIO has a thin storage layer to abstract meta data, event data, and
 model data access. The layer defines a set of standard interfaces to support
 multiple data store backends. PredictionIO users can configure the backend of
@@ -95,6 +112,10 @@ PredictionIO comes with the following sources:
 
 - **HDFS**:
   * Type name is **hdfs**.
+  * Can be used for *Model Data* repository
+
+- **S3**:
+  * Type name is **s3**.
   * Can be used for *Model Data* repository
 
 Each repository can be configured to use different sources as shown above.
@@ -200,7 +221,7 @@ When `TYPE` is set to `jdbc`, the following configuration keys are supported.
 -   INDEX (optional since v0.9.6, default to disabled)
 
     This value is used by creating indexes on entityId and entityType columns to
-    improve performance when findByEntity function is called. Note that these columns 
+    improve performance when findByEntity function is called. Note that these columns
     of entityId and entityType will be created as varchar(255), e.g.
     `PIO_STORAGE_SOURCES_PGSQL_INDEX=enabled`
 
@@ -276,12 +297,51 @@ supported.
     `PIO_STORAGE_SOURCES_HDFS_PATH=/mymodels`
 
 
+#### S3 Configuration
+
+Variable Format: `PIO_STORAGE_SOURCES_[NAME]_TYPE=s3`
+
+Supported Repositories: **model**
+
+To provide authentication information, you can set the `AWS_ACCESS_KEY_ID`
+and `AWS_SECRET_ACCESS_KEY` environment variables or use one of the other
+methods in the [AWS Setup Docs](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence)
+
+When `TYPE` is set to `s3`, the following configuration keys are
+supported.
+
+-   REGION (mandatory)
+
+    AWS Region to use, e.g.
+    `PIO_STORAGE_SOURCES_S3_REGION=us-east-1`
+
+-   BUCKET_NAME (mandatory)
+
+    S3 Bucket where models are stored, e.g.
+    `PIO_STORAGE_SOURCES_S3_BUCKET_NAME=pio_bucket`
+
+-   BASE_PATH (optional)
+
+    S3 base path where models are stored, e.g.
+    `PIO_STORAGE_SOURCES_S3_BASE_PATH=pio_model`
+
+-   DISABLE_CHUNKED_ENCODING (optional)
+
+    Disable the use of Chunked Encoding when transferring files to/from S3, e.g.
+    `PIO_STORAGE_SOURCES_S3_DISABLE_CHUNKED_ENCODING=true`
+
+-   ENDPOINT (optional)
+
+    S3 Endpoint to use, e.g.
+    `PIO_STORAGE_SOURCES_S3_ENDPOINT=http://localstack:4572`
+
+
 ## Adding Support of Other Backends
 
 It is quite straightforward to implement support of other backends. A good
 starting point is to reference the JDBC implementation inside the
-[io.prediction.data.storage.jdbc
-package](https://github.com/PredictionIO/PredictionIO/tree/develop/data/src/main/scala/io/prediction/data/storage/jdbc).
+[org.apache.predictionio.data.storage.jdbc
+package](https://github.com/apache/predictionio/tree/develop/data/src/main/scala/org/apache/predictionio/data/storage/jdbc).
 
 Contributions of different backends implementation is highly encouraged. To
 start contributing, please refer to [this guide](/community/contribute-code/).
